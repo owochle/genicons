@@ -46,8 +46,9 @@ fn main() -> ExitCode {
         Ok(true) => {}
     }
 
-
-    println!("{}", "Generating icon files".green());
+    if !args.silent {
+        println!("{}", "Generating icon files".green());
+    }
 
     SIZE_NAME_PAIRS.into_par_iter().for_each(|(name, width, height)| {
         let resized = transform::resize(&master_image, width, height, SamplingFilter::CatmullRom);
@@ -57,7 +58,9 @@ fn main() -> ExitCode {
         }
     });
 
-    println!("{}", "Generating multi-size favicon.ico".green());
+    if !args.silent {
+        println!("{}", "Generating multi-size favicon.ico".green());
+    }
 
     let mut out_ico = IconDir::new(ResourceType::Icon);
 
@@ -87,9 +90,12 @@ fn main() -> ExitCode {
 
     if let Err(e) = out_ico.write(out_file) {
         eprintln!("{}", format!("Failed to write favicon.ico. {}", e));
+        return ExitCode::FAILURE
     }
 
-    println!("{}", "Generating manifest".green());
+    if !args.silent {
+        println!("{}", "Generating manifest".green());
+    }
 
     let icons = vec![
         WebIcon{
@@ -160,13 +166,19 @@ fn main() -> ExitCode {
 
         break true
     } {
-        println!("{}", "Clipboard disabled or failed. Copy this in the head of your html:".yellow());
-        println!("{}", html)
+        if !args.silent {
+            println!("{}", "Clipboard disabled or failed. Copy this in the head of your html:".yellow());
+            println!("{}", html)
+        }
     } else {
-        println!("{}", "HTML Head copied.".green())
+        if !args.silent {
+            println!("{}", "HTML Head copied.".green())
+        }
     }
 
-    println!("{}", "Page meta generated!".green());
+    if !args.silent {
+        println!("{}", "Page meta generated!".green());
+    }
 
     ExitCode::SUCCESS
 }

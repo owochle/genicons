@@ -25,6 +25,11 @@ pub struct Arguments {
     /// Your app start url
     pub start_url: String,
 
+    
+    #[arg(short, long, required = false, default_value_t = false)]
+    /// Removes all prints (except on errors)
+    pub silent: bool,
+
     /// Your master image from which all favicons will be generated
     pub master_image: PathBuf,
 
