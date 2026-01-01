@@ -33,6 +33,8 @@ fn main() -> ExitCode {
         }
     };
 
+    let hosted_path = args.path.trim_end_matches("/");
+
     match fs::exists(&args.output_dir) {
         Ok(false) | Err(_) => {
             match fs::create_dir(&args.output_dir) {
@@ -99,22 +101,22 @@ fn main() -> ExitCode {
 
     let icons = vec![
         WebIcon{
-            src: "/android-chrome-192x192.png".to_string(),
-            sizes: "192x192".to_string(),
-            typ: "image/png".to_string(),
+            src: format!("{}/android-chrome-192x192.png", &hosted_path),
+            sizes: "192x192",
+            typ: "image/png",
         },
         WebIcon{
-            src: "/android-chrome-512x512.png".to_string(),
-            sizes: "512x512".to_string(),
-            typ: "image/png".to_string(),
+            src: format!("{}/android-chrome-512x512.png", &hosted_path),
+            sizes: "512x512",
+            typ: "image/png",
         }
     ];
     let man = WebManifest{
         short_name: args.short_name.clone(),
-        start_url: args.start_url.to_string(),
-        display: "standalone".to_string(),
-        theme_color: args.app_color.to_string(),
-        name: args.app_name.to_string(),
+        start_url: &args.start_url,
+        display: "standalone",
+        theme_color: &args.app_color,
+        name: &args.app_name,
         icons,
     };
 
@@ -139,10 +141,10 @@ fn main() -> ExitCode {
         return ExitCode::FAILURE
     }
 
-    let html = r#"<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-<link rel="manifest" href="/manifest.json">"#;
+    let html = format!(r#"<link rel="apple-touch-icon" sizes="180x180" href="{}/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="{}/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="{}/favicon-16.png">
+<link rel="manifest" href="{}/manifest.json">"#, &hosted_path, &hosted_path, &hosted_path, &hosted_path);
 
     if !loop {
         if args.no_html_copy {
@@ -158,7 +160,7 @@ fn main() -> ExitCode {
             }
         };
 
-        if let Err(e) = clip.set_text(html) {
+        if let Err(e) = clip.set_text(&html) {
             eprintln!("{}", "Failed to write to clipboard".red());
             println!("{}", e);
             break false;

@@ -25,6 +25,9 @@ pub struct Arguments {
     /// Your app start url
     pub start_url: String,
 
+    #[arg(short, long, required = false, default_value_t = String::from("/"))]
+    /// The path where the favicons will be hosted
+    pub path: String,
     
     #[arg(short, long, required = false, default_value_t = false)]
     /// Removes all prints (except on errors)
